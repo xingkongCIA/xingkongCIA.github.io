@@ -1,0 +1,19 @@
+baseURL = 'https://xingkongcia.github.io/'
+languageCode = 'zh-CN'
+defaultContentLanguage = 'zh'
+title = '纸间'
+timeZone = 'Asia/Taipei'
+hasCJKLanguage = true
+enableRobotsTXT = true
+buildDrafts = false
+buildFuture = false
+buildExpired = false
+summaryLength = 100
+[taxonomies]
+tag = 'tags'
+[outputs]
+home = ['HTML', 'RSS', 'JSON']
+[params]
+description = '在日常的缝隙里，留下一点文字。'
+[markup.goldmark.renderer]
+unsafe = false

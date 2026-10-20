@@ -1,0 +1,5 @@
+{{ define "main" }}
+<section class="hero"><p class="eyebrow">NOTES & STORIES</p><h1>把片刻，<br>写成永恒。</h1><p>{{ .Site.Params.description }}</p><a class="text-link" href="{{ "posts/" | relURL }}">翻开文章 ↗</a><span class="seal" aria-hidden="true">文<br>字</span></section>
+<section class="feed"><div class="section-heading"><h2>最近写下</h2><span>随笔 / 故事 / 日常</span></div>
+{{ range (where .Site.RegularPages "Section" "posts").ByDate.Reverse }}{{ partial "card.html" . }}{{ else }}<p>第一篇文章，正在路上。</p>{{ end }}
+</section>{{ end }}

@@ -1,0 +1,50 @@
+name: Build and deploy Hugo
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check public content
+        run: python scripts/check_public.py
+      - name: Install pinned Hugo
+        env:
+          HUGO_VERSION: '0.147.9'
+        run: |
+          curl --fail --location --retry 3 "https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_${HUGO_VERSION}_linux-amd64.tar.gz" -o "${RUNNER_TEMP}/hugo.tar.gz"
+          curl --fail --location --retry 3 "https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_${HUGO_VERSION}_checksums.txt" -o "${RUNNER_TEMP}/checksums.txt"
+          cd "${RUNNER_TEMP}"
+          grep " hugo_${HUGO_VERSION}_linux-amd64.tar.gz$" checksums.txt | sed "s|hugo_${HUGO_VERSION}_linux-amd64.tar.gz|hugo.tar.gz|" | sha256sum --check --strict
+          tar -xzf hugo.tar.gz hugo
+          echo "${RUNNER_TEMP}" >> "${GITHUB_PATH}"
+      - name: Build
+        run: hugo --minify --panicOnWarning
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4

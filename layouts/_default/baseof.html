@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ if not .IsHome }}{{ .Title }} · {{ end }}{{ .Site.Title }}</title>
+<meta name="description" content="{{ .Description | default .Site.Params.description }}">
+<meta name="color-scheme" content="light dark">
+<link rel="canonical" href="{{ .Permalink }}">
+<link rel="stylesheet" href="{{ "css/site.css" | relURL }}">
+<link rel="alternate" type="application/rss+xml" title="{{ .Site.Title }}" href="{{ "index.xml" | absURL }}">
+<script defer src="{{ "js/site.js" | relURL }}"></script>
+</head>
+<body>
+<a class="skip" href="#main">跳到正文</a>
+<header class="header"><a class="brand" href="{{ .Site.Home.RelPermalink }}">纸间<span>文字与生活的留白</span></a>
+<nav aria-label="主导航"><a href="{{ "posts/" | relURL }}">文章</a><a href="{{ "archives/" | relURL }}">归档</a><a href="{{ "search/" | relURL }}">搜索</a><a href="{{ "about/" | relURL }}">关于</a><button id="theme" aria-label="切换明暗主题" type="button">◐</button></nav></header>
+<main id="main">{{ block "main" . }}{{ end }}</main>
+<footer><span>© {{ now.Year }} {{ .Site.Title }}</span><span>慢慢写，慢慢读 · <a href="{{ "index.xml" | relURL }}">RSS</a></span></footer>
+</body></html>
